@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { Capacitor } from '@capacitor/core';
 import { StatusBar, Style as StatusBarStyle } from '@capacitor/status-bar';
@@ -7,6 +6,8 @@ import { Haptics, ImpactStyle } from '@capacitor/haptics';
 import { Device } from '@capacitor/device';
 import { Network } from '@capacitor/network';
 import { Keyboard } from '@capacitor/keyboard';
+import { App } from '@capacitor/app';
+import { Preferences } from '@capacitor/preferences';
 
 export const useMobileFeatures = () => {
   const [isNative, setIsNative] = useState(false);
@@ -14,6 +15,7 @@ export const useMobileFeatures = () => {
   const [isOnline, setIsOnline] = useState(true);
   const [keyboardHeight, setKeyboardHeight] = useState(0);
   const [isKeyboardOpen, setIsKeyboardOpen] = useState(false);
+  const [appState, setAppState] = useState<'active' | 'background'>('active');
 
   useEffect(() => {
     const initializeMobile = async () => {
@@ -23,9 +25,9 @@ export const useMobileFeatures = () => {
         // Hide splash screen after app loads
         await SplashScreen.hide();
         
-        // Set status bar style for auto garage theme
-        await StatusBar.setStyle({ style: StatusBarStyle.Default });
-        await StatusBar.setBackgroundColor({ color: '#ffffff' });
+        // Set status bar style
+        await StatusBar.setStyle({ style: StatusBarStyle.Light });
+        await StatusBar.setBackgroundColor({ color: '#1d4ed8' });
         
         // Get device info
         const info = await Device.getInfo();
@@ -48,6 +50,20 @@ export const useMobileFeatures = () => {
         Keyboard.addListener('keyboardWillHide', () => {
           setKeyboardHeight(0);
           setIsKeyboardOpen(false);
+        });
+
+        // Monitor app state changes
+        App.addListener('appStateChange', ({ isActive }) => {
+          setAppState(isActive ? 'active' : 'background');
+        });
+
+        // Handle back button
+        App.addListener('backButton', ({ canGoBack }) => {
+          if (!canGoBack) {
+            App.exitApp();
+          } else {
+            window.history.back();
+          }
         });
       }
     };
@@ -88,14 +104,53 @@ export const useMobileFeatures = () => {
     }
   };
 
+  const storeData = async (key: string, value: string) => {
+    if (isNative) {
+      await Preferences.set({ key, value });
+    } else {
+      localStorage.setItem(key, value);
+    }
+  };
+
+  const getData = async (key: string): Promise<string | null> => {
+    if (isNative) {
+      const { value } = await Preferences.get({ key });
+      return value;
+    } else {
+      return localStorage.getItem(key);
+    }
+  };
+
+  const shareContent = async (title: string, text: string, url?: string) => {
+    if (isNative) {
+      const { Share } = await import('@capacitor/share');
+      await Share.share({
+        title,
+        text,
+        url,
+      });
+    } else {
+      if (navigator.share) {
+        await navigator.share({ title, text, url });
+      } else {
+        // Fallback for web
+        await navigator.clipboard.writeText(`${title}\n${text}\n${url || ''}`);
+      }
+    }
+  };
+
   return {
     isNative,
     deviceInfo,
     isOnline,
     keyboardHeight,
     isKeyboardOpen,
+    appState,
     triggerHaptic,
     setStatusBarColor,
-    hideKeyboard
+    hideKeyboard,
+    storeData,
+    getData,
+    shareContent
   };
 };

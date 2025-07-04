@@ -36,6 +36,8 @@ const MobileOptimizedButton = ({
         'min-h-[44px] min-w-[44px] touch-manipulation',
         // Better touch feedback
         'active:scale-95 transition-transform duration-75',
+        // Prevent text selection
+        'select-none',
         className
       )}
       onClick={handleClick}

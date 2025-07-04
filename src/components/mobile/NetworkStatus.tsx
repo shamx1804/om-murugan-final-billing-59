@@ -1,4 +1,3 @@
-
 import { AlertTriangle, Wifi, WifiOff } from 'lucide-react';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { useMobileFeatures } from '@/hooks/useMobileFeatures';
@@ -10,7 +9,7 @@ const NetworkStatus = () => {
   if (!isNative || isOnline) return null;
 
   return (
-    <Alert className="mx-4 mb-4 border-orange-200 bg-orange-50">
+    <Alert className="mx-4 mb-4 border-orange-200 bg-orange-50 fixed top-4 left-0 right-0 z-50">
       <WifiOff className="h-4 w-4 text-orange-600" />
       <AlertDescription className="text-orange-800">
         You're currently offline. Some features may not work properly.

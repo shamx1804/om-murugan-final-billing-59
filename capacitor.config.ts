@@ -1,30 +1,26 @@
-
 import { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'app.lovable.6016dc4811d44274b87fa9aafcd34d7d',
+  appId: 'com.ommurugan.autoworks',
   appName: 'OM MURUGAN AUTO WORKS',
   webDir: 'dist',
   server: {
-    url: 'https://6016dc48-11d4-4274-b87f-a9aafcd34d7d.lovableproject.com?forceHideBadge=true',
-    cleartext: true
+    androidScheme: 'https'
   },
   plugins: {
     SplashScreen: {
-      launchShowDuration: 2000,
-      launchAutoHide: false,
+      launchShowDuration: 3000,
+      launchAutoHide: true,
       launchFadeOutDuration: 500,
       backgroundColor: '#1d4ed8',
       androidSplashResourceName: 'splash',
       androidScaleType: 'CENTER_CROP',
-      showSpinner: false,
+      showSpinner: true,
       androidSpinnerStyle: 'large',
       iosSpinnerStyle: 'small',
       spinnerColor: '#ffffff',
       splashFullScreen: true,
       splashImmersive: true,
-      layoutName: 'launch_screen',
-      useDialog: false,
     },
     StatusBar: {
       style: 'light',
@@ -39,15 +35,23 @@ const config: CapacitorConfig = {
     Haptics: {},
     Device: {},
     Network: {},
+    App: {
+      launchUrl: 'com.ommurugan.autoworks'
+    },
+    LocalNotifications: {
+      smallIcon: 'ic_stat_icon_config_sample',
+      iconColor: '#1d4ed8',
+    },
   },
   android: {
     allowMixedContent: true,
     captureInput: true,
-    webContentsDebuggingEnabled: true,
+    webContentsDebuggingEnabled: false,
   },
   ios: {
     contentInset: 'automatic',
     scrollEnabled: true,
+    backgroundColor: '#1d4ed8'
   },
 };
 

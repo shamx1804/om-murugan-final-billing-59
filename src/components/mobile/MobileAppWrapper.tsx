@@ -11,7 +11,7 @@ const MobileAppWrapper = ({ children }: MobileAppWrapperProps) => {
   useEffect(() => {
     if (isNative) {
       // Set initial status bar styling for the app
-      setStatusBarColor('#ffffff', false);
+      setStatusBarColor('#1d4ed8', false);
       
       // Add mobile-specific meta tags
       const viewport = document.querySelector('meta[name="viewport"]');
@@ -19,9 +19,10 @@ const MobileAppWrapper = ({ children }: MobileAppWrapperProps) => {
         viewport.setAttribute('content', 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover');
       }
 
-      // Prevent zoom on input focus (iOS)
+      // Add mobile-specific styles
       const style = document.createElement('style');
       style.innerHTML = `
+        /* Prevent zoom on input focus (iOS) */
         input, textarea, select {
           font-size: 16px !important;
         }
@@ -30,6 +31,14 @@ const MobileAppWrapper = ({ children }: MobileAppWrapperProps) => {
         body {
           overscroll-behavior: contain;
           -webkit-overflow-scrolling: touch;
+          position: fixed;
+          width: 100%;
+          height: 100%;
+        }
+        
+        #root {
+          height: 100vh;
+          overflow: hidden;
         }
         
         /* Safe area handling */
@@ -47,6 +56,33 @@ const MobileAppWrapper = ({ children }: MobileAppWrapperProps) => {
         
         .safe-area-right {
           padding-right: env(safe-area-inset-right);
+        }
+        
+        .safe-area-insets {
+          padding-top: env(safe-area-inset-top);
+          padding-bottom: env(safe-area-inset-bottom);
+          padding-left: env(safe-area-inset-left);
+          padding-right: env(safe-area-inset-right);
+        }
+        
+        /* Mobile optimizations */
+        .touch-manipulation {
+          touch-action: manipulation;
+        }
+        
+        /* Keyboard handling */
+        .keyboard-open {
+          height: calc(100vh - var(--keyboard-height, 0px));
+        }
+        
+        .keyboard-open .main-content {
+          height: calc(100vh - var(--keyboard-height, 0px) - 60px);
+          overflow-y: auto;
+        }
+        
+        /* Bottom navigation safe area */
+        .bottom-nav-safe {
+          padding-bottom: calc(env(safe-area-inset-bottom) + 8px);
         }
       `;
       document.head.appendChild(style);
