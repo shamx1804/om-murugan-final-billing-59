@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -8,6 +7,8 @@ import { AuthProvider } from "@/hooks/useAuth";
 import { useMobileFeatures } from "@/hooks/useMobileFeatures";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import NetworkStatus from "@/components/mobile/NetworkStatus";
+import MobileAppWrapper from "@/components/mobile/MobileAppWrapper";
+import MobileKeyboardHandler from "@/components/mobile/MobileKeyboardHandler";
 import Index from "./pages/Index";
 import Auth from "./pages/Auth";
 import Dashboard from "./pages/Dashboard";
@@ -23,58 +24,61 @@ const AppContent = () => {
   const { isNative } = useMobileFeatures();
 
   return (
-    <div className={`min-h-screen w-full ${isNative ? 'safe-area-insets' : ''}`}>
-      <Toaster />
-      <Sonner />
-      <NetworkStatus />
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Index />} />
-          <Route path="/auth" element={<Auth />} />
-          <Route
-            path="/dashboard"
-            element={
-              <ProtectedRoute>
-                <Dashboard />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/invoices"
-            element={
-              <ProtectedRoute>
-                <Invoices />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/customers"
-            element={
-              <ProtectedRoute>
-                <Customers />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/services"
-            element={
-              <ProtectedRoute>
-                <Services />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/reports"
-            element={
-              <ProtectedRoute>
-                <Reports />
-              </ProtectedRoute>
-            }
-          />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </BrowserRouter>
-    </div>
+    <MobileAppWrapper>
+      <div className={`min-h-screen w-full ${isNative ? 'safe-area-insets' : ''}`}>
+        <Toaster />
+        <Sonner />
+        <NetworkStatus />
+        <MobileKeyboardHandler />
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<Index />} />
+            <Route path="/auth" element={<Auth />} />
+            <Route
+              path="/dashboard"
+              element={
+                <ProtectedRoute>
+                  <Dashboard />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/invoices"
+              element={
+                <ProtectedRoute>
+                  <Invoices />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/customers"
+              element={
+                <ProtectedRoute>
+                  <Customers />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/services"
+              element={
+                <ProtectedRoute>
+                  <Services />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/reports"
+              element={
+                <ProtectedRoute>
+                  <Reports />
+                </ProtectedRoute>
+              }
+            />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </BrowserRouter>
+      </div>
+    </MobileAppWrapper>
   );
 };
 

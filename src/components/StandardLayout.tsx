@@ -1,4 +1,3 @@
-
 import { ReactNode } from "react";
 import { Button } from "@/components/ui/button";
 import { LogOut } from "lucide-react";
@@ -9,6 +8,8 @@ import { toast } from "sonner";
 import { SidebarProvider, SidebarTrigger, SidebarInset } from "@/components/ui/sidebar";
 import { AppSidebar } from "./AppSidebar";
 import BottomNavigation from "./BottomNavigation";
+import MobileOptimizedButton from "./mobile/MobileOptimizedButton";
+import { useMobileFeatures } from "@/hooks/useMobileFeatures";
 
 interface StandardLayoutProps {
   title: string;
@@ -18,6 +19,7 @@ interface StandardLayoutProps {
 const StandardLayout = ({ title, children }: StandardLayoutProps) => {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const { isNative } = useMobileFeatures();
 
   const handleLogout = async () => {
     try {
@@ -31,10 +33,10 @@ const StandardLayout = ({ title, children }: StandardLayoutProps) => {
 
   return (
     <SidebarProvider>
-      <div className="min-h-screen flex w-full bg-gray-50" style={{ fontFamily: 'Inter, system-ui, -apple-system, sans-serif' }}>
+      <div className={`min-h-screen flex w-full bg-gray-50 ${isNative ? 'safe-area-insets' : ''}`} style={{ fontFamily: 'Inter, system-ui, -apple-system, sans-serif' }}>
         <AppSidebar />
         <SidebarInset className="flex-1">
-          <header className="bg-white shadow-sm border-b sticky top-0 z-40">
+          <header className={`bg-white shadow-sm border-b sticky top-0 z-40 ${isNative ? 'safe-area-top' : ''}`}>
             <div className="flex justify-between items-center px-4 md:px-6 py-4">
               <div className="flex items-center gap-3">
                 <SidebarTrigger className="h-8 w-8" />
@@ -44,7 +46,7 @@ const StandardLayout = ({ title, children }: StandardLayoutProps) => {
               {user && (
                 <div className="flex items-center gap-4">
                   <span className="text-sm text-gray-600 hidden md:block">Welcome, {user.email}</span>
-                  <Button
+                  <MobileOptimizedButton
                     variant="outline"
                     size="sm"
                     onClick={handleLogout}
@@ -52,13 +54,13 @@ const StandardLayout = ({ title, children }: StandardLayoutProps) => {
                   >
                     <LogOut className="h-4 w-4" />
                     <span className="hidden sm:inline">Logout</span>
-                  </Button>
+                  </MobileOptimizedButton>
                 </div>
               )}
             </div>
           </header>
           
-          <main className="flex-1 overflow-auto">
+          <main className={`flex-1 overflow-auto main-content ${isNative ? 'pb-safe' : ''}`}>
             {children}
           </main>
         </SidebarInset>
